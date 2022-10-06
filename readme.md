@@ -11,13 +11,16 @@
 
 ## Versiones
 V0.1
+<br>
   La idea es almacenar el nombre de la planta junto a la fecha de la siembra y la fecha de cosecha estimada, una etiqueta de tipo (suculenta, cítrico, aromático, floral), también asignarle a cada planta un ID único.
 
 V0.2
+  <br>
   El programa debe buscar la planta basándose en el nombre o el ID.
   Filtrar plantas por la etiqueta de tipo generar QR de planta basándonos en el ID
 
 V1.0
+  <br>
   El programa debe poder escanear el QR y asociarlo al ID de la planta y mostrar la información de dicha planta, siendo esta, el nombre, la fecha de siembra, la fecha de cosecha y el tipo.
 
 ## Mockup:
