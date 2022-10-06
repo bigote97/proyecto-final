@@ -4,6 +4,7 @@
 
 ## Integrantes:
   Federico Lotito.
+  <br>
   Augusto Rossetti Lorea.
 ## descripcion:
   El programa desarrollado se encargara de gestionar un informacion de las plantas de un vibero, teniendo el nombre de la misma, su (tipo o genero), fecha de siembra, fecha estimada de cosecha y un ID unico por planta.
