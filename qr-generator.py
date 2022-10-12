@@ -1,15 +1,14 @@
 
 # Import QRCode from pyqrcode
-import pyqrcode
-import png
-from pyqrcode import QRCode
-  
+import pyqrcode  
 
 def generadorQR(nombre, id):
   # Generate QR code
-  url = pyqrcode.create(id)
+  QR_Id = pyqrcode.create(id)
     
   # Create and save the png file naming "myqr.png"
-  url.png(nombre + '.png', scale = 6)
+  QR_Id.png(nombre + '.png', scale = 6)
 
-generadorQR('nombre', 14)
+
+# Dejo este fragmento de codigo para testear de manera unitaria la generacion de codigos QR
+generadorQR('Juan-berta', '141234234234234234234')
