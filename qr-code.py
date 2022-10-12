@@ -13,6 +13,7 @@ while(capture.isOpened()):
   if len(data) > 0:
     print(f'Dato: {data}')
     cv2.imshow('webCam', rectifiedImage)
+    break
   else:
     cv2.imshow('webCam', frame)
 
