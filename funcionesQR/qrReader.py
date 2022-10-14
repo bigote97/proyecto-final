@@ -15,7 +15,6 @@ def scanQRCode():
     data, bbox, rectifiedImage = qr_detector.detectAndDecode(frame)
 
     if len(data) > 0:
-      print(f'Dato: {data}')
       cv2.imshow('webCam', rectifiedImage)
       break
     else:

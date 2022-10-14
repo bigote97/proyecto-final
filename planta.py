@@ -2,12 +2,12 @@
 import datetime
 
 class Planta:
-  def __init__(self, id, planta, tipo, siembra=datetime.date.today(), cosecha=datetime.date.today()):
-    self.nombre = planta
+  def __init__(self, id, nombre, tipo, siembra, cosecha):
+    self.id = id
+    self.nombre = nombre
     self.tipo = tipo
     self.siembra = siembra
     self.cosecha = cosecha
-    self.id = id
   
   def existePlanta(self, busqueda):
     return ((busqueda in self.nombre) or (busqueda in self.tipo))

@@ -1,7 +1,4 @@
 # Interfaz grafica del programa
-from operator import iadd
-from platform import platform
-from re import I, T
 import tkinter
 from tkinter import ttk
 
@@ -50,6 +47,9 @@ class Gui():
     repositorio = Repositorio()
     listaPlantas = repositorio.obtener_plantas()
     self.administrador = Administrador(listaPlantas)
+    tipos = self.administrador.cargarTipos()
+    print(tipos)
+
   def salirPrograma(self):
     repo = Repositorio()
     repo.guardarPlantas(self.administrador.plantas)
@@ -98,6 +98,9 @@ class Gui():
 
   def buscarPlanta(Self):
     pass
+
+
+
 
 if __name__ == "__main__":
     gui = Gui()
