@@ -1,5 +1,4 @@
 import cv2
-from jinja2 import Undefined
 
 
 def scanQRCode():
