@@ -188,11 +188,10 @@ class Gui():
     id = self.treeview.item(item)['text']
     planta = self.administrador.buscarID(id)
     if planta:
-      if self.administrador.eliminarPlanta(id):
-        QR = qrGenerator.generadorQR(planta.nombre, planta.id)
-        messagebox.showwarning("QR generado con exito!","Imprimi el archivo" + planta.nombre + ".png y pegalo en tu maceta")
-      else:
-        messagebox.showwarning("Error al crear QR","Hubo un error vuelva a intentar mas tarde")
+      QR = qrGenerator.generadorQR(planta.nombre, planta.id)
+      messagebox.showwarning("QR generado con exito!","Imprimi el archivo" + planta.nombre + ".png y pegalo en tu maceta")
+    else:
+      messagebox.showwarning("Error al crear QR","Hubo un error vuelva a intentar mas tarde")
 
   def salirPrograma(self):
     repo = Repositorio()
