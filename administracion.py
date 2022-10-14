@@ -17,6 +17,8 @@ class Administrador:
   def agregarPlanta(self, id, planta, tipo, siembra = "otra", cosecha = "otro"):
     planta = Planta(id, planta, tipo, siembra, cosecha)
     self.plantas.append(planta)
+    repo = Repositorio()
+    repo.guardarPlantas(self.plantas)
     return planta
 
   def buscarxTexto(self, filtro):

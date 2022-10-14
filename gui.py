@@ -1,8 +1,15 @@
 # Interfaz grafica del programa
+from datetime import date, datetime
+from dis import show_code
+from email import message
 import tkinter
 from tkinter import ttk
+from tkinter import messagebox
+from tkinter.tix import COLUMN, Tree
 
 from cv2 import validateDisparity
+from pkg_resources import working_set
+from planta import Planta
 from repositorioPlantas import Repositorio
 from administracion import Administrador
 class Gui():
@@ -30,13 +37,17 @@ class Gui():
       self.cajaBuscar.grid(row=1, column=1)
       botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar",
                                   command=self.buscarPlanta).grid(row=1, column=2)
+      botonBuscarQR = tkinter.Button(self.ventana_principal, text="Buscar QR",
+                                  command=self.buscarPlanta).grid(row=1, column=3)
       self.treeview = ttk.Treeview(self.ventana_principal)
       self.treeview = ttk.Treeview(self.ventana_principal,
-                                  columns=("Nombre", "Tipo"))
+                                  columns=("Nombre", "Tipo","Siembra","Cosecha"))
       self.treeview.heading("#0", text="id")
       self.treeview.column("#0", minwidth=0, width="40")
       self.treeview.heading("Nombre", text="Nombre")
       self.treeview.heading("Tipo", text="Tipo")
+      self.treeview.heading("Siembra", text="Siembra")
+      self.treeview.heading("Cosecha", text="Cosecha")
       self.treeview.grid(row=10, columnspan=3)
       self.cargarPlantas()
       botonSalir = tkinter.Button(self.ventana_principal, text="Salir",
@@ -62,43 +73,50 @@ class Gui():
       plantas = self.administrador.plantas
     for planta in plantas:
       item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
-          planta.nombre, planta.tipo), iid=planta.id)
+          planta.nombre, planta.tipo, planta.siembra, planta.cosecha), iid=planta.id)
 
   def agregarPlantas(self):
     self.modalAgregar = tkinter.Toplevel(self.ventana_principal)
     #top.transient(parent)
     self.modalAgregar.grab_set()
-    tkinter.Label(self.modalAgregar, text="Planta: ").grid(row=0, column=0)
+    tkinter.Label(self.modalAgregar, text="ID: ").grid(row=0,column=0)
+    self.ID = tkinter.Entry(self.modalAgregar)
+    self.ID.grid(row=0,column=1,columnspan=2)
+    tkinter.Label(self.modalAgregar, text="Planta: ").grid(row=1, column=0)
     self.nombre = tkinter.Entry(self.modalAgregar)
-    self.nombre.grid(row=0, column=1, columnspan=2)
+    self.nombre.grid(row=1, column=1, columnspan=2)
     self.nombre.focus()
-    tkinter.Label(self.modalAgregar, text="Tipo: ").grid(row=1)
+    tkinter.Label(self.modalAgregar, text="Tipo: ").grid(row=3)
     self.tipo = tkinter.Entry(self.modalAgregar)
-    self.tipo.grid(row=1, column=1, columnspan=2)
+    self.tipo.grid(row=3, column=1, columnspan=2)
     botonOK = tkinter.Button(self.modalAgregar, text="Guardar",
                             command=self.confirmarPlanta)
     self.modalAgregar.bind("<Return>", self.confirmarPlanta)
-    botonOK.grid(row=2)
+    botonOK.grid(row=4)
     botonCancelar = tkinter.Button(self.modalAgregar, text="Cancelar",
                                   command=self.modalAgregar.destroy)
-    botonCancelar.grid(row=2, column=2)
+    botonCancelar.grid(row=4, column=2)
 
   def confirmarPlanta(self, event=None):
-    planta = self.administrador.agregarPlanta(
-        self.nombre.get(), self.tipo.get())
+    planta = self.administrador.agregarPlanta(self.ID.get(), self.nombre.get(), self.tipo.get(), date.today(),date.today())
     self.modalAgregar.destroy()
     item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
-        planta.nombre, planta.tipo), iid=planta.id)
+        planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
+    
 
   def modificarPlanta(self):
-    pass
+    if not self.treeview.selection():
+      messagebox.showwarning("Sin selección","Seleccione primero la nota a modificar")
+      return False
+    item = self.treeview.selection()
+    id = self.treeview.item(item)['text']
+    planta = self.administrador.modificarPlanta(self.tipo.get(), )
 
   def eliminarPlanta(self):
     pass
 
   def buscarPlanta(Self):
     pass
-
 
 
 
