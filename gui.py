@@ -31,6 +31,8 @@ class Gui():
                                       command=self.modificarPlanta).grid(row=0, column=1)
       botonEliminar = tkinter.Button(self.ventana_principal, text="Eliminar",
                                     command=self.eliminarPlanta).grid(row=0, column=2)
+      botonGenerarQR = tkinter.Button(self.ventana_principal, text="Generar QR",
+                                    command=self.generarQR).grid(row=0, column=3)
       tkinter.Label(self.ventana_principal,
                     text="Buscar").grid(row=1, column=0)
       self.cajaBuscar = tkinter.Entry(self.ventana_principal)
@@ -150,8 +152,8 @@ class Gui():
       if self.administrador.eliminarPlanta(id):
         self.treeview.delete(id)
       else:
-        messagebox.showwarning("Error al eliminar","Hubo un error vuelva a intentar")
-    print(planta.nombre)
+        messagebox.showwarning("Error al eliminar","Hubo un error vuelva a intentar mas tarde")
+    print(planta.nombre + 'planta eliminada')
 
   def buscarPlanta(self):
     filtro = self.cajaBuscar.get()
@@ -178,9 +180,19 @@ class Gui():
     return scan
  
 
-  def generarQR(self, nombre, id):
-    QR = qrGenerator.generadorQR(nombre, id)
-    return QR
+  def generarQR(self):
+    if not self.treeview.selection():
+      messagebox.showwarning("Sin selección","Seleccione primero la nota a modificar")
+      return False
+    item = self.treeview.selection()
+    id = self.treeview.item(item)['text']
+    planta = self.administrador.buscarID(id)
+    if planta:
+      if self.administrador.eliminarPlanta(id):
+        QR = qrGenerator.generadorQR(planta.nombre, planta.id)
+        messagebox.showwarning("QR generado con exito!","Imprimi el archivo" + planta.nombre + ".png y pegalo en tu maceta")
+      else:
+        messagebox.showwarning("Error al crear QR","Hubo un error vuelva a intentar mas tarde")
 
   def salirPrograma(self):
     repo = Repositorio()
