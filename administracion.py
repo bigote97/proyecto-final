@@ -57,11 +57,13 @@ class Administrador:
     QR = qrGenerator.generadorQR(nombre, id)
     return QR
 
-
-admin = Administrador()
-QR = admin.generarQR('prueba', 'ID:4543')
-print(QR)
-scan = admin.analizarQRCamara()
-if scan == 'ErrorCode:01-No hay camara':
-  scan = admin.analizarQRImagen(QR)
-print(scan)
+# Codigo de prueba para las funciones de QR.
+# Primero generamos un QR para probar que esta funcion este ok, y de paso ya contar
+# con uno para hacer las pruebas de los casos de disponer camara, o no hacerlo
+# admin = Administrador()
+# QR = admin.generarQR('prueba', 'ID:4543')
+# print(QR)
+# scan = admin.analizarQRCamara()
+# if scan == 'ErrorCode:01-No hay camara':
+#   scan = admin.analizarQRImagen(QR)
+# print(scan)
