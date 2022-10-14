@@ -9,8 +9,8 @@ class Planta:
     self.cosecha = cosecha
     self.id = id
   
-  def existe_planta(self, busqueda):
+  def existePlanta(self, busqueda):
     return ((busqueda in self.planta) or (busqueda in self.tipo))
 
-  def existe_id(self, Id):
+  def existeID(self, Id):
     return Id in self.id
