@@ -1,6 +1,5 @@
 # Importamos opencv, libreria utilizada para analizar el codigo QR y extraer el dato decodificado en el
 import cv2
-from qrGenerator import generadorQR
 #Definimos una funcion que recibira como parametro el path y nombre de la imagen que contiene el QR
 
 def readQRCode(filename):
@@ -16,9 +15,3 @@ def readQRCode(filename):
 		# De no poder analizar la imagen devolvemos un mensaje de error
 		# Estaria bueno trabajar sobre los posibles erroresd para ser mas claros con el usuario
 		return 'error al abrir el archivo'
-
-
-# Caso de prueba invocando la funcion "read_qr_code" para verificar que retorna se corresponde con el QR que se genera en "generadorQR"
-generadorQR('prueba', 'Texto de prueba')
-value = readQRCode('prueba.png')
-print(value)

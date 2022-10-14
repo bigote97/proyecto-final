@@ -4,6 +4,9 @@
 from numpy import true_divide
 from planta import Planta
 from repositorioPlantas import Repositorio
+from funcionesQR import qrReader
+from funcionesQR import qrReaderFile
+from funcionesQR import qrGenerator
 
 class Administrador:
   def __init__(self, listado_plantas = []):
@@ -39,3 +42,26 @@ class Administrador:
       planta.cosecha = fec_cosecha
       return True
     return False
+
+  def analizarQRCamara(self):
+    scan = qrReader.scanQRCode()
+    if scan == 'ErrorCode:01-No hay camara':
+      scan = qrReaderFile.readQRCode('prueba.png')
+    return scan
+  
+  def analizarQRImagen(self, ruta):
+    scan = qrReaderFile.readQRCode(ruta)
+    return scan
+  
+  def generarQR(self, nombre, id):
+    QR = qrGenerator.generadorQR(nombre, id)
+    return QR
+
+
+admin = Administrador()
+QR = admin.generarQR('prueba', 'ID:4543')
+print(QR)
+scan = admin.analizarQRCamara()
+if scan == 'ErrorCode:01-No hay camara':
+  scan = admin.analizarQRImagen(QR)
+print(scan)

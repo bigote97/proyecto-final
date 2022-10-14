@@ -1,6 +1,5 @@
 import cv2
 
-
 def scanQRCode():
   capture = cv2.VideoCapture(0)
   if not capture.isOpened():
@@ -25,5 +24,3 @@ def scanQRCode():
   capture.release()
   cv2.destroyAllWindows
   return data
-
-print(scanQRCode())
