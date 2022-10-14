@@ -12,6 +12,10 @@ from pkg_resources import working_set
 from planta import Planta
 from repositorioPlantas import Repositorio
 from administracion import Administrador
+from funcionesQR import qrReader
+from funcionesQR import qrReaderFile
+from funcionesQR import qrGenerator
+
 class Gui():
   def __init__(self):
     self.iniciarAdministracion()
@@ -136,7 +140,18 @@ class Gui():
     self.modalModificar.destroy(self.treeview.selection()[0], column='tipo', value=self.tipo.get())
 
   def eliminarPlanta(self):
-    pass
+    if not self.treeview.selection():
+      messagebox.showwarning("Sin selección","Seleccione primero la nota a modificar")
+      return False
+    item = self.treeview.selection()
+    id = self.treeview.item(item)['text']
+    planta = self.administrador.buscarID(id)
+    if planta:
+      if self.administrador.eliminarPlanta(id):
+        self.treeview.delete(id)
+      else:
+        messagebox.showwarning("Error al eliminar","Hubo un error vuelva a intentar")
+    print(planta.nombre)
 
   def buscarPlanta(self):
     filtro = self.cajaBuscar.get()
@@ -147,16 +162,25 @@ class Gui():
       messagebox.showwarning("Sin resultados", "Ninguna nota coincide con la búsqueda")
 
   def buscarPlantaQR(self):
-    scan = self.administrador.analizarQRCamara
+    scan = self.analizarQRCamara
     if scan == 'ErrorCode:01-No hay camara':
-      scan = self.administrador.analizarQRImagen('prueba.png')
+      scan = self.analizarQRImagen('prueba.png')
+    print(scan)
 
-    planta = self.administrador.buscarxTexto(scan)
-    
-    if planta:
-      self.cargarPlantas(planta)
-    else:
-      messagebox.showwarning("Sin resultados", "Ninguna nota coincide con la búsqueda")
+  def analizarQRCamara(self):
+    scan = qrReader.scanQRCode()
+    if scan == 'ErrorCode:01-No hay camara':
+      scan = qrReaderFile.readQRCode('prueba.png')
+    return scan
+  
+  def analizarQRImagen(self, ruta):
+    scan = qrReaderFile.readQRCode(ruta)
+    return scan
+ 
+
+  def generarQR(self, nombre, id):
+    QR = qrGenerator.generadorQR(nombre, id)
+    return QR
 
   def salirPrograma(self):
     repo = Repositorio()
