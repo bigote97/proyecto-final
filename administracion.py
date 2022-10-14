@@ -43,6 +43,8 @@ class Administrador:
     if planta:
       planta.texto = tipo
       planta.cosecha = fec_cosecha
+      repo = Repositorio()
+      repo.guardarPlantas(self.plantas)
       return True
     return False
 

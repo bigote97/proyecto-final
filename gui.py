@@ -110,7 +110,40 @@ class Gui():
       return False
     item = self.treeview.selection()
     id = self.treeview.item(item)['text']
-    planta = self.administrador.modificarPlanta(self.tipo.get(), )
+    planta = self.administrador.buscarID(id)
+    print(planta.nombre)
+
+    self.modalModificar = tkinter.Toplevel(self.ventana_principal)
+    #top.transient(parent)
+    self.modalModificar.grab_set()
+    tkinter.Label(self.modalModificar, text="ID: ").grid(row=0,column=0)
+    tkinter.Label(self.modalModificar, text='planta.id').grid(row=0,column=1)
+    self.ID.grid(row=0,column=1,columnspan=2)
+    tkinter.Label(self.modalModificar, text="Planta: ").grid(row=1, column=0)
+    tkinter.Label(self.modalModificar, text=planta.nombre).grid(row=1, column=1)
+    self.nombre.grid(row=1, column=1, columnspan=2)
+    tkinter.Label(self.modalModificar, text="Tipo: ").grid(row=3)
+    self.tipo.focus()
+    self.tipo = tkinter.Entry(self.modalModificar)
+    self.tipo.grid(row=3, column=1, columnspan=2)
+    botonOK = tkinter.Button(self.modalModificar, text="Guardar",
+                            command=self.confirmaModificacion)
+    self.modalModificar.bind("<Return>", self.confirmaModificacion)
+    botonOK.grid(row=4)
+    botonCancelar = tkinter.Button(self.modalModificar, text="Cancelar",
+                                  command=self.modalModificar.destroy)
+    botonCancelar.grid(row=4, column=2)
+
+  def confirmaModificacion(self, event=None):
+    item = self.treeview.selection()
+    id = self.treeview.item(item)['text']
+    planta = self.administrador.buscarID(id) 
+
+    self.administrador.modificarPlanta(id, self.tipo.get(), planta.cosecha)
+
+    self.treeview.set()
+
+    self.modalModificar.destroy(self.treeview.selection()[0], column='tipo', value=self.tipo.get())
 
   def eliminarPlanta(self):
     pass
