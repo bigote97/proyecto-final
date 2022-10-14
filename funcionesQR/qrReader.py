@@ -1,21 +1,30 @@
 import cv2
+from jinja2 import Undefined
 
-capture = cv2.VideoCapture(0)
-while(capture.isOpened()):
-  ret, frame = capture.read()
 
-  if (cv2.waitKey(1) == ord('s')):
-    break
+def scanQRCode():
+  capture = cv2.VideoCapture(0)
+  if not capture.isOpened():
+    data = 'ErrorCode:01-No hay camara'
+    
+  while(capture.isOpened()):
+    ret, frame = capture.read()
 
-  qr_detector = cv2.QRCodeDetector()
-  data, bbox, rectifiedImage = qr_detector.detectAndDecode(frame)
+    if (cv2.waitKey(1) == ord('s')):
+      break
 
-  if len(data) > 0:
-    print(f'Dato: {data}')
-    cv2.imshow('webCam', rectifiedImage)
-    break
-  else:
-    cv2.imshow('webCam', frame)
+    qr_detector = cv2.QRCodeDetector()
+    data, bbox, rectifiedImage = qr_detector.detectAndDecode(frame)
 
-capture.release()
-cv2.destroyAllWindows
+    if len(data) > 0:
+      print(f'Dato: {data}')
+      cv2.imshow('webCam', rectifiedImage)
+      break
+    else:
+      cv2.imshow('webCam', frame)
+
+  capture.release()
+  cv2.destroyAllWindows
+  return data
+
+print(scanQRCode())
