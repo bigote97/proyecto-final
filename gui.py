@@ -189,7 +189,7 @@ class Gui():
     planta = self.administrador.buscarID(id)
     if planta:
       QR = qrGenerator.generadorQR(planta.nombre, planta.id)
-      messagebox.showwarning("QR generado con exito!","Imprimi el archivo" + planta.nombre + ".png y pegalo en tu maceta")
+      messagebox.showwarning("QR generado con exito!","Imprimi el archivo " + QR + " y pegalo en tu maceta")
     else:
       messagebox.showwarning("Error al crear QR","Hubo un error vuelva a intentar mas tarde")
 
