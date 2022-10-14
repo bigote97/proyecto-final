@@ -7,10 +7,10 @@ from repositorioPlantas import Repositorio
 
 class Administrador:
   def __init__(self, listado_plantas = []):
-    self.repositorio = Repositorio()
-    self.plantas = self.repositorio.obtener_plantas()
+    #self.repositorio = Repositorio()
+    self.plantas = listado_plantas
   
-  def agregarPlanta(self, id, planta, tipo, siembra, cosecha):
+  def agregarPlanta(self, id, planta, tipo, siembra = "otra", cosecha = "otro"):
     planta = Planta(id, planta, tipo, siembra, cosecha)
     self.plantas.append(planta)
     return planta

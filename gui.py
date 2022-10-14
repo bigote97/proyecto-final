@@ -14,7 +14,7 @@ class Gui():
     self.iniciarGui()
 
   def finalizarPrograma(self):
-    self.repositorio.guardar_todo(self.anotador.notas)
+    self.repositorio.guardarPlantas(self.administrador.plantas)
     self.ventana_principal.destroy()
 
   def iniciarGui(self):
@@ -22,17 +22,17 @@ class Gui():
       self.ventana_principal = tkinter.Tk()
       self.ventana_principal.title("Administración de Plantas")
       botonAgregar = tkinter.Button(self.ventana_principal, text="Agregar planta",
-                                    command=self.agregar_nota).grid(row=0, column=0)
+                                    command=self.agregarPlantas).grid(row=0, column=0)
       botonModificar = tkinter.Button(self.ventana_principal, text="Modificar",
-                                      command=self.modificar_nota).grid(row=0, column=1)
+                                      command=self.modificarPlanta).grid(row=0, column=1)
       botonEliminar = tkinter.Button(self.ventana_principal, text="Eliminar",
-                                    command=self.eliminar_nota).grid(row=0, column=2)
+                                    command=self.eliminarPlanta).grid(row=0, column=2)
       tkinter.Label(self.ventana_principal,
                     text="Buscar").grid(row=1, column=0)
       self.cajaBuscar = tkinter.Entry(self.ventana_principal)
       self.cajaBuscar.grid(row=1, column=1)
       botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar",
-                                  command=self.buscar_notas).grid(row=1, column=2)
+                                  command=self.buscarPlanta).grid(row=1, column=2)
       self.treeview = ttk.Treeview(self.ventana_principal)
       self.treeview = ttk.Treeview(self.ventana_principal,
                                   columns=("Nombre", "Tipo"))
@@ -43,13 +43,17 @@ class Gui():
       self.treeview.grid(row=10, columnspan=3)
       self.cargarPlantas()
       botonSalir = tkinter.Button(self.ventana_principal, text="Salir",
-                                  command=self.salir).grid(row=11, column=1)
+                                  command=self.salirPrograma).grid(row=11, column=1)
       self.cajaBuscar.focus()
 
   def iniciarAdministracion(self):
     repositorio = Repositorio()
     listaPlantas = repositorio.obtener_plantas()
     self.administrador = Administrador(listaPlantas)
+  def salirPrograma(self):
+    repo = Repositorio()
+    repo.guardarPlantas(self.administrador.plantas)
+    self.ventana_principal.destroy()
 
   def cargarPlantas(self, plantas=None):
     for i in self.treeview.get_children():
@@ -72,8 +76,8 @@ class Gui():
     self.tipo = tkinter.Entry(self.modalAgregar)
     self.tipo.grid(row=1, column=1, columnspan=2)
     botonOK = tkinter.Button(self.modalAgregar, text="Guardar",
-                            command=self.agregar_ok)
-    self.modalAgregar.bind("<Return>", self.agregar_ok)
+                            command=self.confirmarPlanta)
+    self.modalAgregar.bind("<Return>", self.confirmarPlanta)
     botonOK.grid(row=2)
     botonCancelar = tkinter.Button(self.modalAgregar, text="Cancelar",
                                   command=self.modalAgregar.destroy)
@@ -81,11 +85,19 @@ class Gui():
 
   def confirmarPlanta(self, event=None):
     planta = self.administrador.agregarPlanta(
-        self.planta.get(), self.tipo.get())
+        self.nombre.get(), self.tipo.get())
     self.modalAgregar.destroy()
     item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
         planta.nombre, planta.tipo), iid=planta.id)
 
+  def modificarPlanta(self):
+    pass
+
+  def eliminarPlanta(self):
+    pass
+
+  def buscarPlanta(Self):
+    pass
 
 if __name__ == "__main__":
     gui = Gui()
