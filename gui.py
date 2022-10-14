@@ -17,10 +17,6 @@ class Gui():
     self.iniciarAdministracion()
     self.iniciarGui()
 
-  def finalizarPrograma(self):
-    self.repositorio.guardarPlantas(self.administrador.plantas)
-    self.ventana_principal.destroy()
-
   def iniciarGui(self):
 
       self.ventana_principal = tkinter.Tk()
@@ -38,7 +34,7 @@ class Gui():
       botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar",
                                   command=self.buscarPlanta).grid(row=1, column=2)
       botonBuscarQR = tkinter.Button(self.ventana_principal, text="Buscar QR",
-                                  command=self.buscarPlanta).grid(row=1, column=3)
+                                  command=self.buscarPlantaQR).grid(row=1, column=3)
       self.treeview = ttk.Treeview(self.ventana_principal)
       self.treeview = ttk.Treeview(self.ventana_principal,
                                   columns=("Nombre", "Tipo","Siembra","Cosecha"))
@@ -60,11 +56,6 @@ class Gui():
     self.administrador = Administrador(listaPlantas)
     tipos = self.administrador.cargarTipos()
     print(tipos)
-
-  def salirPrograma(self):
-    repo = Repositorio()
-    repo.guardarPlantas(self.administrador.plantas)
-    self.ventana_principal.destroy()
 
   def cargarPlantas(self, plantas=None):
     for i in self.treeview.get_children():
@@ -102,7 +93,6 @@ class Gui():
     self.modalAgregar.destroy()
     item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
         planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
-    
 
   def modificarPlanta(self):
     if not self.treeview.selection():
@@ -148,9 +138,30 @@ class Gui():
   def eliminarPlanta(self):
     pass
 
-  def buscarPlanta(Self):
-    pass
+  def buscarPlanta(self):
+    filtro = self.cajaBuscar.get()
+    plantas = self.administrador.buscarxTexto(filtro)
+    if plantas:
+      self.cargarPlantas(plantas)
+    else:
+      messagebox.showwarning("Sin resultados", "Ninguna nota coincide con la búsqueda")
 
+  def buscarPlantaQR(self):
+    scan = self.administrador.analizarQRCamara
+    if scan == 'ErrorCode:01-No hay camara':
+      scan = self.administrador.analizarQRImagen('prueba.png')
+
+    planta = self.administrador.buscarxTexto(scan)
+    
+    if planta:
+      self.cargarPlantas(planta)
+    else:
+      messagebox.showwarning("Sin resultados", "Ninguna nota coincide con la búsqueda")
+
+  def salirPrograma(self):
+    repo = Repositorio()
+    repo.guardarPlantas(self.administrador.plantas)
+    self.ventana_principal.destroy()
 
 
 if __name__ == "__main__":

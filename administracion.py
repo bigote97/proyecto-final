@@ -22,7 +22,7 @@ class Administrador:
     return planta
 
   def buscarxTexto(self, filtro):
-    return [ planta for planta in self.plantas if planta.coincide(filtro) ]
+    return [ planta for planta in self.plantas if planta.existePlanta(filtro) ]
 
   def buscarID(self, id_planta):
     for planta in self.plantas:
