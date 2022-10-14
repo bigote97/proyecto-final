@@ -1,3 +1,3 @@
-0,aloe vera,cactus,2022-12-3,2021-1-4
-1,limon,citrico,2022-12-3,2021-1-4
-2,oregano,aromatica,2022-12-3,2021-1-4
+aloe vera,cactus,2022-12-3,2021-1-4
+limon,citrico,2022-12-3,2021-1-4
+oregano,aromatica,2022-12-3,2021-1-4

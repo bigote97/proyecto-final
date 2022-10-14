@@ -11,7 +11,7 @@ from administracion import Administrador
 class Gui():
   def __init__(self):
     self.iniciarAdministracion()
-    self.iniciar_gui()
+    self.iniciarGui()
 
   def finalizarPrograma(self):
     self.repositorio.guardar_todo(self.anotador.notas)
@@ -26,16 +26,16 @@ class Gui():
       botonModificar = tkinter.Button(self.ventana_principal, text="Modificar",
                                       command=self.modificar_nota).grid(row=0, column=1)
       botonEliminar = tkinter.Button(self.ventana_principal, text="Eliminar",
-                                     command=self.eliminar_nota).grid(row=0, column=2)
+                                    command=self.eliminar_nota).grid(row=0, column=2)
       tkinter.Label(self.ventana_principal,
                     text="Buscar").grid(row=1, column=0)
       self.cajaBuscar = tkinter.Entry(self.ventana_principal)
       self.cajaBuscar.grid(row=1, column=1)
       botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar",
-                                   command=self.buscar_notas).grid(row=1, column=2)
+                                  command=self.buscar_notas).grid(row=1, column=2)
       self.treeview = ttk.Treeview(self.ventana_principal)
       self.treeview = ttk.Treeview(self.ventana_principal,
-                                   columns=("Nombre", "Tipo"))
+                                  columns=("Nombre", "Tipo"))
       self.treeview.heading("#0", text="id")
       self.treeview.column("#0", minwidth=0, width="40")
       self.treeview.heading("Nombre", text="Nombre")
@@ -48,7 +48,7 @@ class Gui():
 
   def iniciarAdministracion(self):
     repositorio = Repositorio()
-    listaPlantas = Repositorio.obtener_plantas()
+    listaPlantas = repositorio.obtener_plantas()
     self.administrador = Administrador(listaPlantas)
 
   def cargarPlantas(self, plantas=None):
