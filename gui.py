@@ -21,25 +21,24 @@ class Gui():
 
       self.ventana_principal = tkinter.Tk()
       self.ventana_principal.title("Administración de Plantas")
-      botonAgregar = tkinter.Button(self.ventana_principal, text="Agregar planta",
-                                    command=self.agregarPlantas).grid(row=0, column=0)
-      botonModificar = tkinter.Button(self.ventana_principal, text="Modificar",
-                                      command=self.modificarPlanta).grid(row=0, column=1)
-      botonEliminar = tkinter.Button(self.ventana_principal, text="Eliminar",
-                                    command=self.eliminarPlanta).grid(row=0, column=2)
-      botonGenerarQR = tkinter.Button(self.ventana_principal, text="Generar QR",
-                                    command=self.generarQR).grid(row=0, column=3)
-      tkinter.Label(self.ventana_principal,
-                    text="Buscar").grid(row=1, column=0)
+      botonAgregar = tkinter.Button(self.ventana_principal, text="Agregar planta", command=self.agregarPlantas).grid(row=0, column=0)
+      botonModificar = tkinter.Button(self.ventana_principal, text="Modificar", command=self.modificarPlanta).grid(row=0, column=1)
+      botonEliminar = tkinter.Button(self.ventana_principal, text="Eliminar", command=self.eliminarPlanta).grid(row=0, column=2)
+      botonGenerarQR = tkinter.Button(self.ventana_principal, text="Generar QR", command=self.generarQR).grid(row=0, column=3)
       self.cajaBuscar = tkinter.Entry(self.ventana_principal)
-      self.cajaBuscar.grid(row=1, column=1)
-      botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar",
-                                  command=self.buscarPlanta).grid(row=1, column=2)
-      botonBuscarQR = tkinter.Button(self.ventana_principal, text="Buscar QR",
-                                  command=self.buscarPlantaQR).grid(row=1, column=3)
+      self.cajaBuscar.grid(row=1, column=0)
+      botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar", command=self.buscarPlanta).grid(row=1, column=1)
+     
+      tipos = self.administrador.cargarTipos()
+      tipo_elegido = tkinter.StringVar(self.ventana_principal)
+      tipo_elegido.set(tipos[0]) # default value
+      self.buscar_tipo = ttk.OptionMenu(self.ventana_principal, tipo_elegido, *tipos, command=self.buscarTipo)
+      self.buscar_tipo.grid(row=1, column=2)
+
+      botonBuscarQR = tkinter.Button(self.ventana_principal, text="Buscar QR", command=self.buscarPlantaQR).grid(row=1, column=3)
+                                
       self.treeview = ttk.Treeview(self.ventana_principal)
-      self.treeview = ttk.Treeview(self.ventana_principal,
-                                  columns=("Nombre", "Tipo","Siembra","Cosecha"))
+      self.treeview = ttk.Treeview(self.ventana_principal, columns=("Nombre", "Tipo","Siembra","Cosecha"))
       self.treeview.heading("#0", text="id")
       self.treeview.column("#0", minwidth=0, width="40")
       self.treeview.heading("Nombre", text="Nombre")
@@ -48,16 +47,13 @@ class Gui():
       self.treeview.heading("Cosecha", text="Cosecha")
       self.treeview.grid(row=10, columnspan=3)
       self.cargarPlantas()
-      botonSalir = tkinter.Button(self.ventana_principal, text="Salir",
-                                  command=self.salirPrograma).grid(row=11, column=1)
+      botonSalir = tkinter.Button(self.ventana_principal, text="Salir", command=self.salirPrograma).grid(row=11, column=1)
       self.cajaBuscar.focus()
 
   def iniciarAdministracion(self):
     repositorio = Repositorio()
     listaPlantas = repositorio.obtener_plantas()
     self.administrador = Administrador(listaPlantas)
-    tipos = self.administrador.cargarTipos()
-    print(tipos)
 
   def cargarPlantas(self, plantas=None):
     for i in self.treeview.get_children():
@@ -93,8 +89,9 @@ class Gui():
   def confirmarPlanta(self, event=None):
     planta = self.administrador.agregarPlanta(self.nombre.get(), self.tipo.get(), date.today(),date.today())
     self.modalAgregar.destroy()
-    item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
-        planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
+    item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
+    tipos = self.administrador.cargarTipos()
+    self.buscar_tipo.configure(self.ventana_principal, tipos[0], *tipos)
 
   def modificarPlanta(self):
     if not self.treeview.selection():
@@ -133,10 +130,8 @@ class Gui():
         resultado = self.administrador.modificarPlanta(id, nueva_cosecha, nuevo_tipo)
 
         if resultado:
-            self.treeview.set(self.treeview.selection()[0], column="Cosecha",
-                    value=nueva_cosecha)
-            self.treeview.set(self.treeview.selection()[0], column="Tipo",
-                    value=nuevo_tipo)
+            self.treeview.set(self.treeview.selection()[0], column="Cosecha", value=nueva_cosecha)
+            self.treeview.set(self.treeview.selection()[0], column="Tipo", value=nuevo_tipo)
             self.modalModificar.destroy()
         else:
             messagebox.showwarning("Error", "Error al modificar la planta")
@@ -163,8 +158,14 @@ class Gui():
     if plantas:
       self.cargarPlantas(plantas)
     else:
-      messagebox.showwarning(
-          "Sin resultados", "Ninguna planta coincide con la búsqueda")
+      messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
+  
+  def buscarTipo(self, filtro):
+    plantas = self.administrador.buscarxTexto(filtro)
+    if plantas:
+      self.cargarPlantas(plantas)
+    else:
+      messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
 
   def buscarPlantaQR(self):
     scan = qrReader.scanQRCode()

@@ -3,3 +3,8 @@
 3,rosa,aromatica,2022-10-14,2022-10-14,0
 4,limon,citrico,2022-10-20,2022-10-20,1
 5,loto,decorativa,2022-10-20,2022-10-20,0
+6,manzana,fruta,2022-10-20,2022-10-20,0
+7,Naranja,citrico,2022-10-20,2022-10-20,0
+8,cactus orejon,suculenta,2022-10-20,2022-10-20,0
+9,pepe,pepe,2022-10-20,2022-10-20,0
+10,perrrro,eprperpepr,2022-10-20,2022-10-20,0

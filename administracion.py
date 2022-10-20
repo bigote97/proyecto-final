@@ -55,7 +55,8 @@ class Administrador:
     lista_tipos=[]
     # cambiar a set
     for planta in self.plantas:
-      if not planta.tipo in lista_tipos:
-        lista_tipos.append(planta.tipo)
+      if planta.baja == '0':
+        if not planta.tipo in lista_tipos:
+          lista_tipos.append(planta.tipo)
     return lista_tipos
     
