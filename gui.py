@@ -129,15 +129,20 @@ class Gui():
               command = self.modalModificar.destroy)
     botonCancelar.grid(row=2,column=2)
   
-  def confirmarModificacion(self):
+  def confirmarModificacion(self,event = None):
+        item = self.treeview.selection()
+        id = self.treeview.item(item)['text']
         resultado = self.administrador.modificarPlanta(id, self.cosecha.get(),
                 self.tipo.get())
+        print(resultado.tipo)
+        nueva_cosecha = self.cosecha.get()
+        nuevo_tipo = self.tipo.get()
 
         if resultado:
             self.treeview.set(self.treeview.selection()[0], column="Cosecha",
-                    value=self.cosecha.get())
+                    value=nueva_cosecha)
             self.treeview.set(self.treeview.selection()[0], column="Tipo",
-                    value=self.tipo.get())
+                    value=nuevo_tipo)
             self.modalModificar.destroy()
         else:
             messagebox.showwarning("Error", "Error al modificar la planta")

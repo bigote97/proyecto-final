@@ -1,6 +1,1 @@
 34,rosa,aromatica,2022-10-14,2022-10-14
-1,Limon,Citrico,2022-10-19,2022-10-19
-2,Laurel,Aromatica,2022-10-19,2022-10-19
-3,Naranja,Citrico,2022-10-19,2022-10-19
-4,Menta,Aromatica,2022-10-19,2022-10-19
-5,Mandarina,Citrico,2022-10-19,2022-10-19

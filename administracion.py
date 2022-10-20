@@ -1,6 +1,7 @@
 # Desde aqui se administraran todas las acciones respecto a las plantas:
 # Buscar, agregar, modificar, eliminar
 
+from datetime import date, datetime
 from traceback import print_list
 from numpy import true_divide
 from planta import Planta
@@ -40,7 +41,7 @@ class Administrador:
     planta = self.buscarID(id_planta)
     if planta:
       planta.tipo = tipo
-      ##planta.cosecha = fec_cosecha
+      planta.cosecha = date(fec_cosecha)
       repo = Repositorio()
       repo.guardarPlantas(self.plantas)
       return True
