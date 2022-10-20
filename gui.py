@@ -2,12 +2,14 @@
 from datetime import date, datetime
 from dis import show_code
 from email import message
+from mailbox import NoSuchMailboxError
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.tix import COLUMN, Tree
 
 from cv2 import validateDisparity
+from numpy import column_stack
 from pkg_resources import working_set
 from planta import Planta
 from repositorioPlantas import Repositorio
@@ -107,43 +109,43 @@ class Gui():
     item = self.treeview.selection()
     id = self.treeview.item(item)['text']
     planta = self.administrador.buscarID(id)
-    print(planta.nombre)
-
     self.modalModificar = tkinter.Toplevel(self.ventana_principal)
-    #top.transient(parent)
     self.modalModificar.grab_set()
-    tkinter.Label(self.modalModificar, text="ID: ").grid(row=0,column=0)
-    tkinter.Label(self.modalModificar, text='planta.id').grid(row=0,column=1)
-    self.ID.grid(row=0,column=1,columnspan=2)
-    tkinter.Label(self.modalModificar, text="Planta: ").grid(row=1, column=0)
-    tkinter.Label(self.modalModificar, text=planta.nombre).grid(row=1, column=1)
-    self.nombre.grid(row=1, column=1, columnspan=2)
-    tkinter.Label(self.modalModificar, text="Tipo: ").grid(row=3)
-    self.tipo.focus()
+    tkinter.Label(self.modalModificar, text="ID").grid(row=0, column=0)
+    tkinter.Label(self.modalModificar, text = "Cosecha: ").grid(row=0, column=0)
+    self.cosecha = tkinter.Entry(self.modalModificar)
+    self.cosecha.grid(row=0,column=1,columnspan=2)
+    self.cosecha.insert(0, planta.cosecha)
+    self.cosecha.focus()
+    tkinter.Label(self.modalModificar, text = "Tipo: ").grid(row=1)
     self.tipo = tkinter.Entry(self.modalModificar)
-    self.tipo.grid(row=3, column=1, columnspan=2)
+    self.tipo.grid(row=1, column=1, columnspan=2)
+    self.tipo.insert(0, planta.tipo)
     botonOK = tkinter.Button(self.modalModificar, text="Guardar",
-                            command=self.confirmaModificacion)
-    self.modalModificar.bind("<Return>", self.confirmaModificacion)
-    botonOK.grid(row=4)
-    botonCancelar = tkinter.Button(self.modalModificar, text="Cancelar",
-                                  command=self.modalModificar.destroy)
-    botonCancelar.grid(row=4, column=2)
+              command=self.confirmarModificacion)
+    self.modalModificar.bind("<Return>", self.confirmarModificacion)
+    botonOK.grid(row=2)
+    botonCancelar = tkinter.Button(self.modalModificar, text = "Cancelar",
+              command = self.modalModificar.destroy)
+    botonCancelar.grid(row=2,column=2)
+  
+  def confirmarModificacion(self):
+        resultado = self.administrador.modificarPlanta(id, self.cosecha.get(),
+                self.tipo.get())
 
-  def confirmaModificacion(self, event=None):
-    item = self.treeview.selection()
-    id = self.treeview.item(item)['text']
-    planta = self.administrador.buscarID(id) 
-
-    self.administrador.modificarPlanta(id, self.tipo.get(), planta.cosecha)
-
-    self.treeview.set()
-
-    self.modalModificar.destroy(self.treeview.selection()[0], column='tipo', value=self.tipo.get())
+        if resultado:
+            self.treeview.set(self.treeview.selection()[0], column="Cosecha",
+                    value=self.cosecha.get())
+            self.treeview.set(self.treeview.selection()[0], column="Tipo",
+                    value=self.tipo.get())
+            self.modalModificar.destroy()
+        else:
+            messagebox.showwarning("Error", "Error al modificar la planta")
 
   def eliminarPlanta(self):
     if not self.treeview.selection():
-      messagebox.showwarning("Sin selección","Seleccione primero la nota a modificar")
+      messagebox.showwarning(
+          "Sin selección", "Seleccione primero la nota a modificar")
       return False
     item = self.treeview.selection()
     id = self.treeview.item(item)['text']
@@ -152,16 +154,18 @@ class Gui():
       if self.administrador.eliminarPlanta(id):
         self.treeview.delete(id)
       else:
-        messagebox.showwarning("Error al eliminar","Hubo un error vuelva a intentar mas tarde")
+        messagebox.showwarning(
+            "Error al eliminar", "Hubo un error vuelva a intentar mas tarde")
     print(planta.nombre + 'planta eliminada')
 
   def buscarPlanta(self):
     filtro = self.cajaBuscar.get()
-    plantas = self.administrador.buscarxTexto(filtro)
+    plantas = self.administrador.buscarxTexto(filtro.lower())
     if plantas:
       self.cargarPlantas(plantas)
     else:
-      messagebox.showwarning("Sin resultados", "Ninguna nota coincide con la búsqueda")
+      messagebox.showwarning(
+          "Sin resultados", "Ninguna nota coincide con la búsqueda")
 
   def buscarPlantaQR(self):
     scan = self.analizarQRCamara
@@ -174,11 +178,11 @@ class Gui():
     if scan == 'ErrorCode:01-No hay camara':
       scan = qrReaderFile.readQRCode('prueba.png')
     return scan
-  
+
   def analizarQRImagen(self, ruta):
     scan = qrReaderFile.readQRCode(ruta)
     return scan
- 
+
 
   def generarQR(self):
     if not self.treeview.selection():

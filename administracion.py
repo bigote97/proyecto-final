@@ -39,13 +39,13 @@ class Administrador:
   def modificarPlanta(self, id_planta, tipo, fec_cosecha):
     planta = self.buscarID(id_planta)
     if planta:
-      planta.texto = tipo
-      planta.cosecha = fec_cosecha
+      planta.tipo = tipo
+      ##planta.cosecha = fec_cosecha
       repo = Repositorio()
       repo.guardarPlantas(self.plantas)
       return True
     return False
- 
+
   def cargarTipos(self):
     lista_tipos=[]
     # cambiar a set
