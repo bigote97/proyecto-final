@@ -1,9 +1,7 @@
 # Desde aqui se administraran todas las acciones respecto a las plantas:
 # Buscar, agregar, modificar, eliminar
 
-from datetime import date, datetime
-from traceback import print_list
-from numpy import true_divide
+from datetime import date
 from planta import Planta
 from repositorioPlantas import Repositorio
 
@@ -13,8 +11,12 @@ class Administrador:
     #self.repositorio = Repositorio()
     self.plantas = listado_plantas
   
-  def agregarPlanta(self, id, planta, tipo, siembra = "otra", cosecha = "otro"):
-    planta = Planta(id, planta, tipo, siembra, cosecha)
+  def agregarPlanta(self, planta, tipo, siembra = "otra", cosecha = "otro"):
+    tamanio_lista = len(self.plantas) - 1
+    ultimo_id = self.plantas[tamanio_lista].id
+    id = str(int(ultimo_id) + 1)
+
+    planta = Planta(id, planta, tipo, siembra, cosecha, '0')
     self.plantas.append(planta)
     repo = Repositorio()
     repo.guardarPlantas(self.plantas)
@@ -32,7 +34,7 @@ class Administrador:
   def eliminarPlanta(self, id_planta):
     planta = self.buscarID(id_planta)
     if planta:
-      self.plantas.remove(planta)
+      planta.baja = '1'
       repo = Repositorio()
       repo.guardarPlantas(self.plantas)
       return True
@@ -57,13 +59,3 @@ class Administrador:
         lista_tipos.append(planta.tipo)
     return lista_tipos
     
-# Codigo de prueba para las funciones de QR.
-# Primero generamos un QR para probar que esta funcion este ok, y de paso ya contar
-# con uno para hacer las pruebas de los casos de disponer camara, o no hacerlo
-# admin = Administrador()
-#QR = admin.generarQR('prueba', 'ID:4543')
-#print(QR)
-# scan = admin.analizarQRCamara()
-# if scan == 'ErrorCode:01-No hay camara':
-# scan = admin.analizarQRImagen('prueba.png')
-# print(scan)

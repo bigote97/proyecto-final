@@ -1,17 +1,10 @@
 # Interfaz grafica del programa
-from cgi import print_arguments
-from datetime import date, datetime
-from dis import show_code
-from email import message
-from mailbox import NoSuchMailboxError
+from datetime import date
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.tix import COLUMN, Tree
 
-from cv2 import validateDisparity
-from numpy import column_stack
-from pkg_resources import working_set
 from planta import Planta
 from repositorioPlantas import Repositorio
 from administracion import Administrador
@@ -72,9 +65,9 @@ class Gui():
     if not plantas:
       plantas = self.administrador.plantas
     for planta in plantas:
-      item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
-          planta.nombre, planta.tipo, planta.siembra, planta.cosecha), iid=planta.id)
-
+      if planta.baja == '0':
+        item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo, planta.siembra, planta.cosecha), iid=planta.id)
+      
   def agregarPlantas(self):
     self.modalAgregar = tkinter.Toplevel(self.ventana_principal)
     #top.transient(parent)
@@ -98,7 +91,7 @@ class Gui():
     botonCancelar.grid(row=4, column=2)
 
   def confirmarPlanta(self, event=None):
-    planta = self.administrador.agregarPlanta(self.ID.get(), self.nombre.get(), self.tipo.get(), date.today(),date.today())
+    planta = self.administrador.agregarPlanta(self.nombre.get(), self.tipo.get(), date.today(),date.today())
     self.modalAgregar.destroy()
     item = self.treeview.insert("", tkinter.END, text=planta.id, values=(
         planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
@@ -171,24 +164,42 @@ class Gui():
       self.cargarPlantas(plantas)
     else:
       messagebox.showwarning(
-          "Sin resultados", "Ninguna nota coincide con la búsqueda")
+          "Sin resultados", "Ninguna planta coincide con la búsqueda")
 
   def buscarPlantaQR(self):
-    scan = self.analizarQRCamara
-    if scan == 'ErrorCode:01-No hay camara':
-      scan = self.analizarQRImagen('prueba.png')
-    print(scan)
-
-  def analizarQRCamara(self):
     scan = qrReader.scanQRCode()
     if scan == 'ErrorCode:01-No hay camara':
-      scan = qrReaderFile.readQRCode('prueba.png')
-    return scan
+      self.modalArchivoQR()
+    else:
+      planta = self.administrador.buscarID(scan)
+      if planta:
+        self.cargarPlantas(planta)
+      else:
+        messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
 
-  def analizarQRImagen(self, ruta):
-    scan = qrReaderFile.readQRCode(ruta)
-    return scan
+  def analizarQRImagen(self):
+    archivo = self.nombre_archivo.get()
+    scan = qrReaderFile.readQRCode(archivo)
+    planta = self.administrador.buscarID(scan)
+    if planta:
+      self.cargarPlantas([planta])
+    else:
+      messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
 
+  def modalArchivoQR(self):
+    self.modalArchivoQR = tkinter.Toplevel(self.ventana_principal)
+    self.modalArchivoQR.grab_set()
+    tkinter.Label(self.modalArchivoQR, text = "Archivo: ").grid(row=0, column=0)
+    self.nombre_archivo = tkinter.Entry(self.modalArchivoQR)
+    self.nombre_archivo.grid(row=0,column=1,columnspan=2)
+    self.nombre_archivo.focus()
+    botonOK = tkinter.Button(self.modalArchivoQR, text="Buscar",
+              command=self.analizarQRImagen)
+    self.modalArchivoQR.bind("<Return>", self.analizarQRImagen)
+    botonOK.grid(row=2)
+    botonCancelar = tkinter.Button(self.modalArchivoQR, text = "Cancelar",
+              command = self.modalArchivoQR.destroy)
+    botonCancelar.grid(row=2,column=2)
 
   def generarQR(self):
     if not self.treeview.selection():

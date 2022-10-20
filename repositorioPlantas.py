@@ -30,7 +30,7 @@ class Repositorio:
     cosecha_temp = datos_planta[4].split("-")
     siembra = datetime.date(int(siembra_temp[0]),int(siembra_temp[1]),int(siembra_temp[2]))
     cosecha = datetime.date(int(float(cosecha_temp[0])),int(float(cosecha_temp[1])),int(float(cosecha_temp[2])))
-    planta = Planta(datos_planta[0], datos_planta[1], datos_planta[2], siembra, cosecha)
+    planta = Planta(datos_planta[0], datos_planta[1], datos_planta[2], siembra, cosecha, datos_planta[5])
     return planta
 
   def planta_a_fila(self, planta):
@@ -39,4 +39,4 @@ class Repositorio:
     fecha_siembra_text = str(fecha_siembra.year)+"-"+str(fecha_siembra.month)+"-"+str(fecha_siembra.day)
     fecha_cosecha_text = str(fecha_cosecha.year)+"-"+str(fecha_cosecha.month)+"-"+str(fecha_cosecha.day)
 
-    return planta.id + "," + planta.nombre + "," + planta.tipo + "," + fecha_siembra_text + "," + fecha_cosecha_text+ "\n"
+    return planta.id + "," + planta.nombre + "," + planta.tipo + "," + fecha_siembra_text + "," + fecha_cosecha_text+ "," + planta.baja + "\n"
