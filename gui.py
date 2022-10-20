@@ -168,14 +168,15 @@ class Gui():
 
   def buscarPlantaQR(self):
     scan = qrReader.scanQRCode()
-    if scan == 'ErrorCode:01-No hay camara':
-      self.modalArchivoQR()
-    else:
+    if not scan == 'ErrorCode:01-No hay camara':
       planta = self.administrador.buscarID(scan)
       if planta:
-        self.cargarPlantas(planta)
+        self.cargarPlantas([planta])
+        self.modalArchivoQR.destroy()
       else:
         messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
+    else:
+      self.modalArchivoQR()
 
   def analizarQRImagen(self):
     archivo = self.nombre_archivo.get()
@@ -183,6 +184,7 @@ class Gui():
     planta = self.administrador.buscarID(scan)
     if planta:
       self.cargarPlantas([planta])
+      self.modalArchivoQR.destroy()
     else:
       messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
 
