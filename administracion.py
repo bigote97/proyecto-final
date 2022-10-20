@@ -7,6 +7,7 @@ from numpy import true_divide
 from planta import Planta
 from repositorioPlantas import Repositorio
 
+
 class Administrador:
   def __init__(self, listado_plantas = []):
     #self.repositorio = Repositorio()
@@ -37,11 +38,12 @@ class Administrador:
       return True
     return False
 
-  def modificarPlanta(self, id_planta, tipo, fec_cosecha):
+  def modificarPlanta(self, id_planta, fec_cosecha, tipo):
     planta = self.buscarID(id_planta)
     if planta:
       planta.tipo = tipo
-      planta.cosecha = date(fec_cosecha)
+      cosecha_temp = fec_cosecha.split("-")
+      planta.cosecha = date(int(float(cosecha_temp[0])),int(float(cosecha_temp[1])),int(float(cosecha_temp[2])))
       repo = Repositorio()
       repo.guardarPlantas(self.plantas)
       return True

@@ -1,4 +1,5 @@
 # Interfaz grafica del programa
+from cgi import print_arguments
 from datetime import date, datetime
 from dis import show_code
 from email import message
@@ -132,11 +133,11 @@ class Gui():
   def confirmarModificacion(self,event = None):
         item = self.treeview.selection()
         id = self.treeview.item(item)['text']
-        resultado = self.administrador.modificarPlanta(id, self.cosecha.get(),
-                self.tipo.get())
-        print(resultado.tipo)
         nueva_cosecha = self.cosecha.get()
         nuevo_tipo = self.tipo.get()
+        print(nueva_cosecha)
+        print(nuevo_tipo)
+        resultado = self.administrador.modificarPlanta(id, nueva_cosecha, nuevo_tipo)
 
         if resultado:
             self.treeview.set(self.treeview.selection()[0], column="Cosecha",
