@@ -1,5 +1,6 @@
 # Interfaz grafica del programa
 from datetime import date
+import datetime
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
@@ -16,8 +17,6 @@ class Gui():
   def __init__(self):
     self.iniciarAdministracion()
     self.iniciarGui()
-
-  
 
   def iniciarGui(self):
 
@@ -69,16 +68,16 @@ class Gui():
     self.modalAgregar = tkinter.Toplevel(self.ventana_principal)
     #top.transient(parent)
     self.modalAgregar.grab_set()
-    tkinter.Label(self.modalAgregar, text="ID: ").grid(row=0,column=0)
-    self.ID = tkinter.Entry(self.modalAgregar)
-    self.ID.grid(row=0,column=1,columnspan=2)
-    tkinter.Label(self.modalAgregar, text="Planta: ").grid(row=1, column=0)
+    tkinter.Label(self.modalAgregar, text="Planta: ").grid(row=0, column=0)
     self.nombre = tkinter.Entry(self.modalAgregar)
-    self.nombre.grid(row=1, column=1, columnspan=2)
+    self.nombre.grid(row=0, column=1, columnspan=2)
     self.nombre.focus()
-    tkinter.Label(self.modalAgregar, text="Tipo: ").grid(row=3)
+    tkinter.Label(self.modalAgregar, text="Tipo: ").grid(row=1)
     self.tipo = tkinter.Entry(self.modalAgregar)
-    self.tipo.grid(row=3, column=1, columnspan=2)
+    self.tipo.grid(row=1, column=1, columnspan=2)
+    tkinter.Label(self.modalAgregar, text="Cosechar el: ").grid(row=2,column=0)
+    self.cosecha = tkinter.Entry(self.modalAgregar)
+    self.cosecha.grid(row=2,column=1,columnspan=2)
     botonOK = tkinter.Button(self.modalAgregar, text="Guardar",
                             command=self.confirmarPlanta)
     self.modalAgregar.bind("<Return>", self.confirmarPlanta)
@@ -88,7 +87,13 @@ class Gui():
     botonCancelar.grid(row=4, column=2)
 
   def confirmarPlanta(self, event=None):
-    planta = self.administrador.agregarPlanta(self.nombre.get(), self.tipo.get(), date.today(),date.today())
+    cosecha = self.cosecha.get()
+    if cosecha == '':
+      cosecha = date.today()
+    else:
+      cosecha_temp = cosecha.split("-")
+      cosecha = datetime.date(int(cosecha_temp[0]),int(cosecha_temp[1]),int(cosecha_temp[2]))
+    planta = self.administrador.agregarPlanta(self.nombre.get(), self.tipo.get(), date.today(), cosecha)
     if self.nombre.get() != "":
       self.modalAgregar.destroy()
       item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
@@ -96,8 +101,6 @@ class Gui():
       self.buscar_tipo.option_clear()
     else:
       messagebox.showwarning("Campos incompletos","Por favor, ingresa los campos correspondientes")
-
-    
 
   def modificarPlanta(self):
     if not self.treeview.selection():
@@ -179,11 +182,10 @@ class Gui():
       planta = self.administrador.buscarID(scan)
       if planta:
         self.cargarPlantas([planta])
-        self.modalArchivoQR.destroy()
       else:
         messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
     else:
-      self.modalArchivoQR()
+      self.modalInputQR()
 
   def analizarQRImagen(self):
     archivo = self.nombre_archivo.get()
@@ -193,9 +195,10 @@ class Gui():
       self.cargarPlantas([planta])
       self.modalArchivoQR.destroy()
     else:
+      self.modalArchivoQR.destroy()
       messagebox.showwarning("Sin resultados", "Ninguna planta coincide con la búsqueda")
 
-  def modalArchivoQR(self):
+  def modalInputQR(self):
     self.modalArchivoQR = tkinter.Toplevel(self.ventana_principal)
     self.modalArchivoQR.grab_set()
     tkinter.Label(self.modalArchivoQR, text = "Archivo: ").grid(row=0, column=0)
@@ -227,7 +230,6 @@ class Gui():
     repo = Repositorio()
     repo.guardarPlantas(self.administrador.plantas)
     self.ventana_principal.destroy()
-
 
 if __name__ == "__main__":
     gui = Gui()
