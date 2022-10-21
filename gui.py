@@ -30,11 +30,10 @@ class Gui():
       self.cajaBuscar = tkinter.Entry(self.ventana_principal)
       self.cajaBuscar.grid(row=1, column=0)
       botonBuscar = tkinter.Button(self.ventana_principal, text="Buscar", command=self.buscarPlanta).grid(row=1, column=1)
-     
       tipos = self.administrador.cargarTipos()
       tipo_elegido = tkinter.StringVar(self.ventana_principal)
       tipo_elegido.set(tipos[0]) # default value
-      self.buscar_tipo = ttk.OptionMenu(self.ventana_principal, tipo_elegido, *tipos, command=self.buscarTipo)
+      self.buscar_tipo = ttk.OptionMenu(self.ventana_principal, tipo_elegido,"", *tipos, command=self.buscarTipo)
       self.buscar_tipo.grid(row=1, column=2)
 
       botonBuscarQR = tkinter.Button(self.ventana_principal, text="Buscar QR", command=self.buscarPlantaQR).grid(row=1, column=3)
@@ -90,10 +89,15 @@ class Gui():
 
   def confirmarPlanta(self, event=None):
     planta = self.administrador.agregarPlanta(self.nombre.get(), self.tipo.get(), date.today(),date.today())
-    self.modalAgregar.destroy()
-    item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
-    tipos = self.administrador.cargarTipos()
-    self.buscar_tipo.option_clear()
+    if self.nombre.get() != "":
+      self.modalAgregar.destroy()
+      item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
+      tipos = self.administrador.cargarTipos()
+      self.buscar_tipo.option_clear()
+    else:
+      messagebox.showwarning("Campos incompletos","Por favor, ingresa los campos correspondientes")
+
+    
 
   def modificarPlanta(self):
     if not self.treeview.selection():
