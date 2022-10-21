@@ -17,6 +17,8 @@ class Gui():
     self.iniciarAdministracion()
     self.iniciarGui()
 
+  
+
   def iniciarGui(self):
 
       self.ventana_principal = tkinter.Tk()
@@ -91,7 +93,7 @@ class Gui():
     self.modalAgregar.destroy()
     item = self.treeview.insert("", tkinter.END, text=planta.id, values=(planta.nombre, planta.tipo,planta.siembra,planta.cosecha), iid=planta.id)
     tipos = self.administrador.cargarTipos()
-    self.buscar_tipo.configure(self.ventana_principal, tipos[0], *tipos)
+    self.buscar_tipo.option_clear()
 
   def modificarPlanta(self):
     if not self.treeview.selection():
