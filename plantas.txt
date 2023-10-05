@@ -1,6 +1,6 @@
 1,Jazmin,aromatica,2022-10-14,2022-10-14,0
 2,Oregano,Hortaliza,2022-10-14,2022-10-14,0
-3,rosa,aromatica,2022-10-14,2022-10-14,0
+3,rosa,aromatica,2022-10-14,2022-10-14,1
 4,limon,citrico,2022-10-20,2022-10-20,1
 5,loto,decorativa,2022-10-20,2022-10-20,0
 6,manzana,fruta,2022-10-20,2022-10-20,0
