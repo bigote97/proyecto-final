@@ -16,27 +16,28 @@ class Administrador:
     ultimo_id = self.plantas[tamanio_lista].id
     id = str(int(ultimo_id) + 1)
 
-    planta = Planta(id, planta, tipo, siembra, cosecha, '0')
+    planta = Planta(id, planta, tipo, siembra, siembra, '0')
     self.plantas.append(planta)
     repo = Repositorio()
-    repo.guardarPlantas(self.plantas)
+    repo.agregar_planta(planta)
     return planta
 
   def buscarxTexto(self, filtro):
-    return [ planta for planta in self.plantas if planta.existePlanta(filtro) ]
+    repo = Repositorio()
+    encontradas = repo.buscar_nombre_plantas(filtro)
+    return encontradas
 
   def buscarID(self, id_planta):
-    for planta in self.plantas:
-      if str(planta.id) == str(id_planta):
-        return planta
-    return None
+    repo = Repositorio()
+    encontradas = repo.buscar_planta_id(id_planta)
+    return encontradas
 
   def eliminarPlanta(self, id_planta):
     planta = self.buscarID(id_planta)
     if planta:
       planta.baja = '1'
       repo = Repositorio()
-      repo.guardarPlantas(self.plantas)
+      repo.eliminar_planta(planta)
       return True
     return False
 
@@ -47,7 +48,7 @@ class Administrador:
       cosecha_temp = fec_cosecha.split("-")
       planta.cosecha = date(int(float(cosecha_temp[0])),int(float(cosecha_temp[1])),int(float(cosecha_temp[2])))
       repo = Repositorio()
-      repo.guardarPlantas(self.plantas)
+      repo.modificar_planta(planta)
       return True
     return False
 

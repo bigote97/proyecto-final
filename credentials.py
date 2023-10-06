@@ -1,8 +1,8 @@
 def getCredentials():
   credentials = {
     "host":"localhost",
-    "user":"server",
-    "password":"Rimbombante14",
-    "database":"inmobiliaira"
+    "user":"root",
+    "password":"root",
+    "database":"qr_plants"
   }
   return credentials

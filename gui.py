@@ -227,8 +227,6 @@ class Gui():
       messagebox.showwarning("Error al crear QR","Hubo un error vuelva a intentar mas tarde")
 
   def salirPrograma(self):
-    repo = Repositorio()
-    repo.guardarPlantas(self.administrador.plantas)
     self.ventana_principal.destroy()
 
 if __name__ == "__main__":

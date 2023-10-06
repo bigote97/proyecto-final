@@ -1,42 +1,126 @@
 # Manejador de base de datos, en este caso utilizaremos un archivo de texto
 import datetime
 from planta import Planta
+
+from credentials import getCredentials
+import mysql.connector
+
 class Repositorio:
-  def __init__(self, archivo = "plantas.txt"):
-    self.archivo = archivo
+  def __init__(self):
+    self.bd = mysql.connector.connect(**getCredentials())
+    self.cursor = None
+    if self.bd and self.bd.is_connected:
+        self.cursor = self.bd.cursor()
 
   def obtener_plantas(self):
     plantas = []
-    with open(self.archivo, 'r') as file_path:
-      for fila in file_path:
-        n = self.fila_a_planta(fila)
-        plantas.append(n)
+    query = "SELECT id, name, type, planting, harvest, baja FROM plants"
+    self.cursor.execute(query)
+    response = self.cursor.fetchall()
+    for id, name, type, planting, harvest, baja in response:
+      plantingDia = planting.day
+      plantingMes = planting.month
+      plantingAnio = planting.year
+      siembra = datetime.date(plantingAnio, plantingMes, plantingDia)
+      harvestDia = harvest.day
+      harvestMes = harvest.month
+      harvestAnio = harvest.year
+      cosecha = datetime.date(harvestAnio, harvestMes, harvestDia)
+      p = Planta(id, name, type, siembra, cosecha, baja)
+      plantas.append(p)
+    return plantas
+
+  def buscar_nombre_plantas(self, text):
+    plantas = []
+    query = "SELECT id, name, type, planting, harvest, baja FROM plants"
+    query += " WHERE name LIKE %s"
+    values = [
+      '%'+ text +'%'
+    ]
+    self.cursor.execute(query, values)
+    response = self.cursor.fetchall()
+    for id, name, type, planting, harvest, baja in response:
+      plantingDia = planting.day
+      plantingMes = planting.month
+      plantingAnio = planting.year
+      siembra = datetime.date(plantingAnio, plantingMes, plantingDia)
+      harvestDia = harvest.day
+      harvestMes = harvest.month
+      harvestAnio = harvest.year
+      cosecha = datetime.date(harvestAnio, harvestMes, harvestDia)
+      p = Planta(id, name, type, siembra, cosecha, baja)
+      plantas.append(p)
+    return plantas
+
+  def buscar_planta_id(self, ID):
+    plantas = []
+    query = "SELECT id, name, type, planting, harvest, baja FROM plants"
+    query += " WHERE id = %s"
+    values = [
+      ID,
+    ]
+    self.cursor.execute(query, values)
+    response = self.cursor.fetchall()
+    for id, name, type, planting, harvest, baja in response:
+      plantingDia = planting.day
+      plantingMes = planting.month
+      plantingAnio = planting.year
+      siembra = datetime.date(plantingAnio, plantingMes, plantingDia)
+      harvestDia = harvest.day
+      harvestMes = harvest.month
+      harvestAnio = harvest.year
+      cosecha = datetime.date(harvestAnio, harvestMes, harvestDia)
+      p = Planta(id, name, type, siembra, cosecha, baja)
+      plantas.append(p)
     return plantas
   
-  def guardarPlantas(self, plantas):
-    with open(self.archivo, 'w') as file_path:
-      for planta in plantas:
-        fila_por_planta = self.planta_a_fila(planta)
-        file_path.write(fila_por_planta)
-      print("Guardado en "+ self.archivo)
+  def agregar_planta(self, planta):
+    query = "INSERT INTO plants (name, type, planting, harvest, baja)"
+    query += "VALUES (%s, %s, %s, %s, %s)"
+    values = [
+        planta.nombre,
+        planta.tipo,
+        planta.siembra,
+        planta.cosecha,
+        planta.baja
+    ]
 
-  def agregar_planta(self):
-    pass
+    try:
+      self.cursor.execute(query, values)
+      self.bd.commit()
+      print("Consulta ejecutada correctamente.")
+    except mysql.connector.Error as err:
+      print(f"Error al ejecutar la consulta: {err}")
 
-  def fila_a_planta(self, fila):
-    fila = fila[:-1] # Elimina el ultimo caracter, en este caso el salto de linea
-    datos_planta = fila.split(',')
-    siembra_temp = datos_planta[3].split("-")
-    cosecha_temp = datos_planta[4].split("-")
-    siembra = datetime.date(int(siembra_temp[0]),int(siembra_temp[1]),int(siembra_temp[2]))
-    cosecha = datetime.date(int(float(cosecha_temp[0])),int(float(cosecha_temp[1])),int(float(cosecha_temp[2])))
-    planta = Planta(datos_planta[0], datos_planta[1], datos_planta[2], siembra, cosecha, datos_planta[5])
-    return planta
+  def modificar_planta(self, planta):
+    query = "UPDATE plants "
+    query += "SET type = %s, harvest =%s "
+    query += "WHERE id = %s"
+    values = [
+        planta.tipo,
+        planta.cosecha,
+        planta.id,
+    ]
 
-  def planta_a_fila(self, planta):
-    fecha_cosecha = planta.cosecha
-    fecha_siembra = planta.siembra
-    fecha_siembra_text = str(fecha_siembra.year)+"-"+str(fecha_siembra.month)+"-"+str(fecha_siembra.day)
-    fecha_cosecha_text = str(fecha_cosecha.year)+"-"+str(fecha_cosecha.month)+"-"+str(fecha_cosecha.day)
+    try:
+      self.cursor.execute(query, values)
+      self.bd.commit()
+      print("Consulta ejecutada correctamente.")
+    except mysql.connector.Error as err:
+      print(f"Error al ejecutar la consulta: {err}")
 
-    return planta.id + "," + planta.nombre + "," + planta.tipo + "," + fecha_siembra_text + "," + fecha_cosecha_text+ "," + planta.baja + "\n"
+  def eliminar_planta(self, planta):
+    query = "UPDATE plants "
+    query += "SET baja = %s "
+    query += "WHERE id = %s"
+    values = [
+        '1',
+        planta.id
+    ]
+
+    try:
+      self.cursor.execute(query, values)
+      self.bd.commit()
+      print("Consulta ejecutada correctamente.")
+    except mysql.connector.Error as err:
+      print(f"Error al ejecutar la consulta: {err}")
